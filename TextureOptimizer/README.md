@@ -18,18 +18,10 @@ Videos are expected as multi-panel MP4 files. The `--video_col` / `--video_num_c
 - Conda env recommended: `conda create -n texopt python=3.10 && pip install o_voxel torch numpy opencv-python Pillow gco`
 
 ```bash
-# Install Blender locally (if not in PATH)
-azcopy cp --recursive "https://<account>.blob.core.windows.net/<container>/path/to/blender-4.5.1-linux-x64?<SAS>" /tmp/blender-4.5.1
-cd /tmp/blender-4.5.1/blender-4.5.1-linux-x64/lib && python3 -c "
-import os, glob
-for f in glob.glob('lib*.so*'):
-    parts = f.split('.so.')
-    if len(parts)==2 and '.' in parts[1]:
-        vp = parts[1].split('.')
-        major, minor = f'{parts[0]}.so.{vp[0]}', f'{parts[0]}.so.{vp[0]}.{vp[1]}'
-        [os.path.exists(x) or os.symlink(f, x) for x in (major, minor) if not os.path.exists(x)]
-"
-export BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender
+# Download Blender from blender.org
+wget https://download.blender.org/release/Blender4.5/blender-4.5.1-linux-x64.tar.xz
+tar -xf blender-4.5.1-linux-x64.tar.xz -C /tmp/
+export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
 ```
 
 ## Quick Start
