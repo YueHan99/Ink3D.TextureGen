@@ -15,7 +15,7 @@ Videos are expected as multi-panel MP4 files. The `--video_col` / `--video_num_c
 ```bash
 conda create -n texopt python=3.10
 conda activate texopt
-pip install o_voxel torch numpy opencv-python Pillow imageio trimesh utils3d
+pip install o_voxel torch numpy opencv-python Pillow imageio trimesh utils3d gco-wrapper
 
 # Blender 4.5+ (for PBR pre-processing)
 wget https://download.blender.org/release/Blender4.5/blender-4.5.1-linux-x64.tar.xz
@@ -304,7 +304,7 @@ python render_vxz1024.py input.vxz
 ```bash
 conda create -n trellis2 python=3.10
 conda activate trellis2
-pip install torch numpy opencv-python Pillow imageio trimesh o_voxel utils3d
+pip install torch numpy opencv-python Pillow imageio trimesh o_voxel utils3d gco-wrapper
 ```
 
 > `trellis2` module is only needed for `render_vxz.py` (PBR turntable). Set `PYTHONPATH` to the TRELLIS.2 repo root as a workaround.
