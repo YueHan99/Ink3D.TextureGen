@@ -9,8 +9,8 @@ GLB mesh + H video + V video → Blender PBR → Voxelize → View selection →
 ## Environment
 
 ```bash
-conda create -n texopt python=3.10
-conda activate texopt
+conda create -n trellis2 python=3.10
+conda activate trellis2
 pip install o_voxel torch numpy opencv-python Pillow imageio trimesh utils3d gco-wrapper
 
 # Blender 4.5+ (set BLENDER_PATH or install)
@@ -41,8 +41,7 @@ BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender python3 voxelize
     --priority_mode --depth_eps 5e-4 \
     --output_vxz 034.vxz --resolution 1024
 
-# 3. PBR render (optional, requires TRELLIS.2 repo in PYTHONPATH)
-export PYTHONPATH=/path/to/TRELLIS.2:$PYTHONPATH
+# 3. PBR render 
 python3 render_vxz.py \
     --vxz 034.vxz --mesh 034.pickle \
     -o 034_pbr.mp4 --roughness 0.15 --metallic 0.3 --turntable --shaded_only
