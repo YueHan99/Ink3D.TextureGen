@@ -12,10 +12,25 @@ Videos are expected as multi-panel MP4 files. The `--video_col` / `--video_num_c
 
 ## Environment
 
-- Python 3.10 with CUDA
-- Blender 4.5+ (set `BLENDER_PATH` env var or install via script)
-- `o_voxel`, `torch`, `numpy`, `opencv-python`, `Pillow`, `gco`
-- Conda env recommended: `conda create -n texopt python=3.10 && pip install o_voxel torch numpy opencv-python Pillow gco`
+```bash
+conda create -n texopt python=3.10
+conda activate texopt
+pip install o_voxel torch numpy opencv-python Pillow imageio trimesh utils3d
+
+# Blender 4.5+ (for PBR pre-processing)
+wget https://download.blender.org/release/Blender4.5/blender-4.5.1-linux-x64.tar.xz
+tar -xf blender-4.5.1-linux-x64.tar.xz -C /tmp/
+export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
+```
+
+| Dependency | Purpose |
+|-----------|---------|
+| `o_voxel` | Voxel grid rasterization and VXZ I/O |
+| `torch` | GPU computation |
+| `utils3d` | 3D transforms, camera utilities |
+| `trimesh` | Mesh loading (for `render_vxz.py`) |
+| Blender 4.5+ | PBR pre-processing (set `BLENDER_PATH`) |
+| `gco` | Graph-cut optimization (**optional**, only for `--mode graphcut`) |
 
 ```bash
 # Download Blender from blender.org
@@ -290,5 +305,6 @@ python render_vxz1024.py input.vxz
 conda create -n trellis2 python=3.10
 conda activate trellis2
 pip install torch numpy opencv-python Pillow imageio trimesh o_voxel utils3d
-pip install trellis2  # or clone from TRELLIS.2 repo
 ```
+
+> `trellis2` module is only needed for `render_vxz.py` (PBR turntable). Set `PYTHONPATH` to the TRELLIS.2 repo root as a workaround.
