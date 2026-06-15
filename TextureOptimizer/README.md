@@ -21,13 +21,28 @@ export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
 
 ## Quick Start
 
+Download example data from Hugging Face and run end-to-end:
+
 ```bash
+# 1. Download example data (mesh + generated videos)
+pip install huggingface_hub
+python3 -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Yuehavingfun/ink3d-example-data', repo_type='dataset',
+                  allow_patterns='034/*', local_dir='./example_data')
+"
+
+# 2. Bake PBR texture
 BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender python3 voxelize.py \
-    mesh.glb \
-    --video h_video.mp4 --video_v v_video.mp4 \
+    ./example_data/034/mesh.glb \
+    --video ./example_data/034/h120/position.mp4 \
+    --video_v ./example_data/034/v120/position.mp4 \
     --video_num_cols 4 --video_col 2 --video_v_num_cols 4 --video_v_col 2 \
     --priority_mode --depth_eps 5e-4 \
     --output_vxz output.vxz --resolution 1024
+
+# output.vxz — voxelized PBR grid
+# output.mp4 — auto-generated turntable preview
 ```
 
 Videos use 4-panel format `[ref | condition | generated | albedo]`. `--video_col 2` selects the generated panel.
@@ -102,9 +117,4 @@ python3 voxelize.py mesh.glb \
 60 V frames match the coverage of all 120 V frames at half the compute.
 
 ## Troubleshooting
-
-- **Blender not found**: Set `BLENDER_PATH` or `wget` from blender.org
-- **V video wrong column**: Use `--video_v_num_cols 4 --video_v_col 2` for 4-panel V videos
-- **`o_voxel` not found**: `pip install o_voxel`
-- **`trellis2` not found**: Only needed for `render_vxz.py` PBR render; `render_vxz1024.py` works standalone
 - **Depth bleeding on thin surfaces**: Reduce `--depth_eps` (try 5e-4 or even 1e-4)
