@@ -61,13 +61,12 @@ python3 render.py \
     --orbit horizontal \
     --num_cameras 120
 
-# Vertical orbit with left-right flip (recommended for V track)
+# Vertical orbit
 python3 render.py \
     --input_file ./example_data/034/mesh.glb \
     --output_dir ./output \
     --orbit vertical \
-    --num_cameras 120 \
-    --flip_x
+    --num_cameras 120
 
 # CPU rendering (for machines without compatible GPU)
 python3 render.py \
@@ -132,7 +131,7 @@ output/
 | `--model_name` | GLB filename | Custom model name for output subdirectory |
 | `--orbit` | `horizontal` | Camera orbit: `horizontal` or `vertical` |
 | `--num_cameras` | `120` | Number of camera positions |
-| `--flip_x` | `false` | Flip right axis (left-right mirror), recommended for vertical orbit |
+| `--flip_x` | `false` | Flip right axis (left-right mirror) for vertical orbit |
 | `--engine` | `CYCLES_GPU` | Render engine: `CYCLES_GPU`, `CYCLES_CPU`, `BLENDER_EEVEE` |
 | `--width` | `1024` | Render width in pixels |
 | `--height` | `1024` | Render height in pixels |
@@ -142,7 +141,7 @@ output/
 | `--scene_scale` | `1.0` | Scene normalization scale |
 | `--env_map` | `assets/env_textures/...` | HDR environment map path |
 
-> **Why `--flip_x`?** By default, vertical orbit cameras on `meridian_270` produce rendered images that are mirrored relative to the horizontal orbit's first frame. Use `--flip_x` to correct this so H and V first frames share the same viewpoint.
+> **Note**: `--flip_x` is available as an optional correction if the vertical orbit produces flipped images relative to the horizontal orbit. Most models trained on non-flipped V data do not require this flag.
 
 ## Requirements
 
