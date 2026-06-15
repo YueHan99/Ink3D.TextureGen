@@ -30,7 +30,7 @@ export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
 | `utils3d` | 3D transforms, camera utilities |
 | `trimesh` | Mesh loading (for `render_vxz.py`) |
 | Blender 4.5+ | PBR pre-processing (set `BLENDER_PATH`) |
-| `gco` | Graph-cut optimization (**optional**, only for `--mode graphcut`) |
+| `gco-wrapper` | Graph-cut optimization (**optional**, only for `--mode graphcut`) |
 
 ```bash
 # Download Blender from blender.org
