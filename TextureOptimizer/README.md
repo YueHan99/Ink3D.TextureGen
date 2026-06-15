@@ -41,8 +41,13 @@ BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender python3 voxelize
     --priority_mode --depth_eps 5e-4 \
     --output_vxz output.vxz --resolution 1024
 
+# 3. PBR render (optional, requires TRELLIS.2)
+PYTHONPATH=/path/to/TRELLIS.2:$PYTHONPATH python3 render_vxz.py \
+    --vxz output.vxz --mesh output.pickle \
+    -o output_pbr.mp4 --roughness 0.15 --metallic 0.3 --turntable --shaded_only
+
 # output.vxz — voxelized PBR grid
-# output.mp4 — auto-generated turntable preview
+# output_pbr.mp4 — PBR turntable with HDR lighting
 ```
 
 Videos use 4-panel format `[ref | condition | generated | albedo]`. `--video_col 2` selects the generated panel.
