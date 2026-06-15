@@ -1,0 +1,65 @@
+__pycache__/
+*.pyc
+*.so
+.venv/
+*.egg-info/
+.DS_Store
+
+# Model weights & large files
+*.safetensors
+*.pth
+*.pt
+*.ckpt
+*.pickle
+*.vxz
+*.npy
+
+# Training outputs
+models/train/
+output/
+outputs/
+test_outputs/
+
+# Example data (large)
+tests/example_data/
+
+# IDE
+.vscode/
+.idea/
+
+# Blobmnt cache
+blobmnt_tmp/
+blobmnt_tmp2/
+
+# Claude
+.claude/
+
+# IDE
+.vscode/
+.idea/
+
+# Output files
+*.mp4
+output/
+outputs/
+
+# Data files
+*.csv
+*.npy
+
+# Model weights
+models/
+*.safetensors
+*.pth
+*.pt
+*.ckpt
+*.pickle
+
+# Example data (large)
+tests/example_data/
+test_outputs/
+
+# Compiled Python
+__pycache__/
+*.pyc
+*.egg-info/
