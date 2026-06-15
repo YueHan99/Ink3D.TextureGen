@@ -35,8 +35,8 @@ snapshot_download('Yuehavingfun/ink3d-example-data', repo_type='dataset',
 # 2. Bake PBR texture
 BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender python3 voxelize.py \
     ./example_data/034/mesh.glb \
-    --video ./example_data/034/h120/position.mp4 \
-    --video_v ./example_data/034/v120/position.mp4 \
+    --video ./example_data/034/h_034_ref.mp4 \
+    --video_v ./example_data/034/v_034_ref.mp4 \
     --video_num_cols 4 --video_col 2 --video_v_num_cols 4 --video_v_col 2 \
     --priority_mode --depth_eps 5e-4 \
     --output_vxz 034.vxz --resolution 1024
@@ -50,7 +50,11 @@ python3 render_vxz.py \
 # 034_pbr.mp4 — PBR turntable with HDR lighting
 ```
 
-Videos use 4-panel format `[ref | condition | generated | albedo]`. `--video_col 2` selects the generated panel.
+Videos use 4-panel format `[ref | condition | generated | albedo]`. `--video_col 2` selects the generated panel. Each case directory on Hugging Face contains:
+
+- `mesh.glb`, `ref.png` — Render inputs
+- `h120/`, `v120/` — Render outputs (condition videos: position, normal, albedo)
+- `h_*.mp4`, `v_*.mp4` — OrbitVideoGen outputs (generated videos, used as TextureOptimizer input)
 
 ## Baking Modes
 
