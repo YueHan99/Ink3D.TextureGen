@@ -35,6 +35,20 @@ pip install -e .
 
 ## Quick Start
 
+### Example Data
+
+Download example meshes from Hugging Face:
+
+```bash
+pip install huggingface_hub
+python3 -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Yuehavingfun/ink3d-example-data', repo_type='dataset',
+                  allow_patterns='034/*', local_dir='./example_data')
+"
+# Downloads mesh.glb + pre-rendered condition videos for case 034 (cup model)
+```
+
 ### Single Model Rendering
 
 ```bash
@@ -42,24 +56,18 @@ conda activate bpy40
 
 # Horizontal orbit, 120 cameras, GPU rendering
 python3 render.py \
-    --input_file /path/to/model.glb \
+    --input_file ./example_data/034/mesh.glb \
     --output_dir ./output \
     --orbit horizontal \
     --num_cameras 120
 
 # Vertical orbit with left-right flip (recommended for V track)
 python3 render.py \
-    --input_file /path/to/model.glb \
+    --input_file ./example_data/034/mesh.glb \
     --output_dir ./output \
     --orbit vertical \
     --num_cameras 120 \
     --flip_x
-
-# Custom model name (overrides GLB filename)
-python3 render.py \
-    --input_file /path/to/model.glb \
-    --output_dir ./output \
-    --model_name my_model
 
 # CPU rendering (for machines without compatible GPU)
 python3 render.py \

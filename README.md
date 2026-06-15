@@ -46,6 +46,19 @@ Ink3D/
 
 ## Quick Start
 
+### Download Example Data
+
+```bash
+pip install huggingface_hub
+python3 -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Yuehavingfun/ink3d-example-data', repo_type='dataset',
+                  allow_patterns='034/*', local_dir='./example_data')
+"
+```
+
+### Render → Generate → Bake
+
 See module-level READMEs for detailed instructions:
 
 | Module | Description | Documentation |
