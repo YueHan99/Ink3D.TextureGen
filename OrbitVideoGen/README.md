@@ -180,6 +180,16 @@ python scripts/generate_hv_csv.py           # Mode 2: H+V merged (shuffled)
 python scripts/generate_hv_paired_csv.py    # Mode 3/4: paired H+V per object
 ```
 
+## Test Scripts
+
+| Mode | Test script | Resolution | Notes |
+|------|-------------|-----------|-------|
+| 1, 2, 4 (H) | `tests/test_single_h.py` | 768×768 | H-track inference |
+| 1, 2, 4 (V) | `tests/test_single_v_hv.py` | 768×768 | V-track inference, supports `--h_video` |
+| 3 (spatial) | `tests/test_single_hv_spatial.py` | 512×1024 | H+V side-by-side input/output |
+
+All scripts auto-detect 4-panel video format and support `--models_base`, `--no_bg_remove`.
+
 ## Background Removal
 
 ```bash
