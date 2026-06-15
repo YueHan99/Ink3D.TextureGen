@@ -18,15 +18,20 @@ Multi-pass 3D model rendering pipeline based on Blender. Supports horizontal (H)
 conda create -n bpy40 python=3.10
 conda activate bpy40
 
-# 2. Install bpy (Blender Python API)
-pip install bpy==4.0.0
+# 2. Download and install bpy==4.0.0 (not available on PyPI)
+#    Download from Hugging Face:
+wget https://huggingface.co/datasets/Yuehavingfun/ink3d-example-data/resolve/main/bpy-4.0.0-py310-linux-x86_64.tar.gz
+tar -xzf bpy-4.0.0-py310-linux-x86_64.tar.gz -C $CONDA_PREFIX/lib/python3.10/site-packages/
 
-# 3. Install this package
+# 3. Install dependencies
+pip install numpy imageio[ffmpeg] Pillow scipy tqdm requests zstandard
+
+# 4. Install this package
 cd Render
 pip install -e .
 ```
 
-> **Note**: `bpy` must be installed separately via pip. The package requires Python 3.10 and bpy 4.0.0.
+> **Note**: `bpy==4.0.0` is no longer available on PyPI. We provide a pre-packaged version on Hugging Face. Requires Python 3.10 and Linux x86_64.
 
 ## Quick Start
 
