@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/teaser.png" alt="Ink3D Teaser" width="90%">
+  <img src="assets/teaser.png" alt="Ink3D Teaser" width="60%">
 </p>
 
 <h3 align="center">Ink3D: Sculpting 3D Assets with Extremely Complex Textures via Video Generative Models</h3>
