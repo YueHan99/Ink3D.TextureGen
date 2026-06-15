@@ -102,8 +102,8 @@ H and V frames concatenated spatially (side-by-side) into a single 1024×512 fra
 |----------|-------|
 | Resolution | 1024×512 (H|V) |
 | Frames | 61 (stride-2 from 121-frame source) |
-| CSV | `position2albedo_all_321_hv_paired.csv` |
-| Training script | `train_14b_hv_spatial_concat.py` (NYI) |
+| CSV | `position2albedo_all_321hv.csv` |
+| Training script | `train_14b_ref_normal_revise_light_aug_61_revise2_imageref0322.py` |
 
 ```
 Frame layout:  [ H 512×512 | V 512×512 ]
@@ -111,11 +111,15 @@ Frame layout:  [ H 512×512 | V 512×512 ]
 ```
 
 ```bash
-# Training (requires future training code)
-# bash scripts/train_hv_spatial_high.sh
+# Training
+bash scripts/train_hv_spatial_high.sh
+bash scripts/train_hv_spatial_low.sh
 
-# Inference
-# python tests/test_single_hv_spatial.py ...
+# Inference (use same test scripts, model expects 1024x512 input)
+python tests/test_single_h.py \
+    --width 1024 --height 512 \
+    --video_dir ./example_data/034/h120 \
+    ...
 ```
 
 ### Mode 4: H/V Temporal Interleave
@@ -153,7 +157,7 @@ python tests/test_single_v_hv.py ... --output output_v.mp4
 |------|-----------|--------|---------------------|---------------|
 | 1: H-only | 512×512 | 121 | No | `train_14b_*_v2.py` |
 | 2: HV random | 512×512 | 121 | No (alternating) | Same as Mode 1 |
-| 3: Spatial concat | 1024×512 | 61 | Yes (side-by-side) | NYI |
+| 3: Spatial concat | 1024×512 | 121 | Yes (side-by-side) | `train_14b_*_imageref0322.py` |
 | 4: Temporal interleave | 512×512 | 121 | Yes (back-to-back) | `train_14b_hv_interleave.py` |
 
 ## CSV Data Format
