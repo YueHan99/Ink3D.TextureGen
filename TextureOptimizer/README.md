@@ -41,9 +41,9 @@ BLENDER_PATH=/tmp/blender-4.5.1/blender-4.5.1-linux-x64/blender python3 voxelize
     --priority_mode --depth_eps 5e-4 \
     --output_vxz 034.vxz --resolution 1024
 
-# 3. PBR render (optional, requires TRELLIS.2 — clone from github.com/microsoft/TRELLIS)
-git clone https://github.com/microsoft/TRELLIS.git /tmp/TRELLIS
-PYTHONPATH=/tmp/TRELLIS:$PYTHONPATH python3 render_vxz.py \
+# 3. PBR render (optional, requires TRELLIS.2 repo in PYTHONPATH)
+export PYTHONPATH=/path/to/TRELLIS.2:$PYTHONPATH
+python3 render_vxz.py \
     --vxz 034.vxz --mesh 034.pickle \
     -o 034_pbr.mp4 --roughness 0.15 --metallic 0.3 --turntable --shaded_only
 
@@ -93,8 +93,8 @@ output/
 # Voxel splatter (fast, included): auto-runs after baking
 python render_vxz1024.py output.vxz
 
-# Full PBR render (slower, requires TRELLIS.2):
-PYTHONPATH=/tmp/TRELLIS:$PYTHONPATH python render_vxz.py \
+# Full PBR render (slower, requires TRELLIS.2 repo in PYTHONPATH):
+python render_vxz.py \
     --vxz output.vxz --mesh output.pickle -o pbr.mp4 \
     --roughness 0.15 --metallic 0.3 --turntable --shaded_only
 ```
