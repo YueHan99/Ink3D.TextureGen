@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="assets/teaser.pdf" alt="Ink3D Teaser" width="80%">
+  <img src="assets/teaser.png" alt="Ink3D Teaser" width="90%">
 </p>
 
-<h1 align="center">Ink3D: Sculpting 3D Assets with Extremely Complex Textures<br>via Video Generative Models</h1>
+<h3 align="center">Ink3D: Sculpting 3D Assets with Extremely Complex Textures via Video Generative Models</h3>
 
 <p align="center">
-  <a href="https://arxiv.org/"><img src="https://img.shields.io/badge/arXiv-coming_soon-b31b1b"></a>
-  <a href="https://ink3dtexgen.github.io/"><img src="https://img.shields.io/badge/Project-Page-blue"></a>
+  <a href="#"><img src="https://img.shields.io/badge/arXiv-coming_soon-b31b1b"></a>
+  <a href="https://ink3dtexgen.github.io/Ink3D-TextureGen/"><img src="https://img.shields.io/badge/Project-Page-blue"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green"></a>
 </p>
 
