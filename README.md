@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/arXiv-coming_soon-b31b1b"></a>
-  <a href="https://yuehan99.github.io/Ink3D.TextureGen/"><img src="https://img.shields.io/badge/Project-Page-blue"></a>
+  <a href="https://ink3dtexgen.github.io/Ink3D-TextureGen/"><img src="https://img.shields.io/badge/Project-Page-blue"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green"></a>
 </p>
 
