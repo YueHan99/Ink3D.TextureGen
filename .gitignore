@@ -38,6 +38,10 @@ blobmnt_tmp2/
 .vscode/
 .idea/
 
+# IDE
+.vscode/
+.idea/
+
 # Output files
 *.mp4
 output/
