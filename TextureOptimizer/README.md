@@ -125,5 +125,57 @@ python3 voxelize.py mesh.glb \
 
 60 V frames match the coverage of all 120 V frames at half the compute.
 
+## UV Atlas Baking (Alternative)
+
+Classic UV-unwrap + nvdiffrast PBR baking. Produces texture atlases (`.png`) with metallic/roughness channels and `.glb` with PBR material.
+
+### Pipeline
+
+```
+GLB mesh + H albedo video + V albedo video + H MR video + V MR video
+    → UV unwrap (xatlas) → bake albedo → bake metallic → bake roughness → PBR GLB
+```
+
+### Quick Start
+
+```bash
+conda activate trellis2
+python bake_pbr.py \
+    --sha256 "000-000/967fe402e33942188b9cf34f8f9be431" \
+    --video_path "/path/to/albedo_h.mp4" \
+    --output_dir ./output
+```
+
+### Input Files
+
+Each UUID directory needs:
+```
+{uuid}/
+├── albedo_h.mp4     # H albedo video
+├── albedo_v.mp4     # V albedo video
+├── mr.mp4           # H MR video (metallic + roughness)
+├── mr_v.mp4         # V MR video
+└── meta.json        # H/V camera parameters (auto-detected from Objaverse paths)
+```
+
+### Output
+
+```
+output/{bucket}_{uuid}/
+├── bake_1024_a.glb      # PBR GLB (baseColor + metallicRoughness)
+├── texture.png          # Albedo atlas
+├── texture_metallic.png # Metallic atlas
+└── texture_roughness.png# Roughness atlas
+```
+
+### Mode
+
+`bake_texture()` supports two modes:
+
+| Mode | Speed | Quality | Use case |
+|------|-------|---------|----------|
+| `fast` | ~3s for 240 views | Good | Quick iteration |
+| `opt` | ~5min for 2500 iters | Best | Final output |
+
 ## Troubleshooting
 - **Depth bleeding on thin surfaces**: Reduce `--depth_eps` (try 5e-4 or even 1e-4)
