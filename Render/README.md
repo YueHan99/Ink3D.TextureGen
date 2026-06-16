@@ -159,6 +159,33 @@ python scripts/batch_render_mr.py \
 | `--threads` | Parallel workers (1) |
 | `--skip` | Resume from index N |
 
+### Reconstruction: Bake Videos Back to GLB
+
+验证数据集质量——用渲染视频 + 相机参数反向重建带 PBR 纹理的 GLB。
+
+```bash
+conda activate trellis2
+# 参考代码: OrbitVideoGen/examples/ 下的 bake_pbr.py (UV atlas + nvdiffrast)
+python bake_pbr.py \
+    --sha256 "000-000/{uuid}" \
+    --video_path "./albedo_h.mp4" \
+    --output_dir ./output
+```
+
+| 输入 | 来源 |
+|------|------|
+| `albedo_h.mp4`, `albedo_v.mp4` | H/V 渲染产出的 albedo 视频 |
+| `mr.mp4`, `mr_v.mp4` | H/V 的 metallic/roughness 视频 |
+| `{uuid}.glb` | `glbs_normalized/` 目录下的归一化网格 |
+| meta.json | 自动从 Objaverse metadata 路径读取 |
+
+| 输出 | 说明 |
+|------|------|
+| `bake_1024_a.glb` | PBR GLB (baseColor + metallicRoughness) |
+| `texture.png` | Albedo 纹理图集 |
+| `texture_metallic.png` | Metallic 纹理 |
+| `texture_roughness.png` | Roughness 纹理 |
+
 ## Command-Line Options
 
 | Argument | Default | Description |
