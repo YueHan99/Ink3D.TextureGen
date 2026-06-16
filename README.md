@@ -14,10 +14,10 @@
 
 ## 📰 News
 
-- **[2026/06/15]** 🔥🔥🔥 Initial release. See [`Render/`](Render/README.md) for condition video rendering, [`OrbitVideoGen/`](OrbitVideoGen/README.md) for video generation training & inference, and [`TextureOptimizer/`](TextureOptimizer/README.md) for PBR texture baking.
+- **[2026/06/15]** 🏗️ Dataset preparation: multi-threaded batch GLB rendering with resumable H/V passes — see [`Render/scripts/batch_render_albedo.py`](Render/scripts/batch_render_albedo.py) and [`batch_render_mr.py`](Render/scripts/batch_render_mr.py).
+- **[2026/06/15]** 🔥🔥🔥 Initial release. See [`Render/`](Render/README.md) for condition video rendering, [`OrbitVideoGen/`](OrbitVideoGen/README.md) for video generation training & inference, and [`TextureOptimizer/`](TextureOptimizer/README.md) for texture baking.
 - **[2026/06/15]** 📦 Example data & pretrained weights available on [Hugging Face](https://huggingface.co/datasets/Yuehavingfun/ink3d-example-data).
-- **[2026/06/15]** 🚀 Four training modes: H-only, H/V random, spatial concat, temporal interleave — see [`OrbitVideoGen/scripts/`](OrbitVideoGen/scripts/).
-- **[2026/06/15]** 🎨 Priority baking with depth-aware view selection: H-first → V-fill → BFS. 99.9% coverage on complex meshes.
+
 
 ---
 
