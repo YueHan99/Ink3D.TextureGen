@@ -44,6 +44,48 @@ Ink3D/
 └── assets/               # Teaser & media
 ```
 
+## Getting Started
+
+### Prerequisites
+
+- Linux with CUDA GPU (A100/H100 recommended)
+- Conda (Miniconda or Anaconda)
+
+### Environment
+
+Each module has its own conda environment:
+
+```bash
+# Render (module 1): Python 3.10 + bpy 4.0.0
+conda create -n bpy40 python=3.10
+conda activate bpy40
+pip install numpy imageio[ffmpeg] Pillow scipy tqdm
+# bpy 4.0.0: download from Hugging Face (see Render/README.md)
+
+# OrbitVideoGen (module 2): Python 3.10 + PyTorch
+conda create -n orbitgen python=3.10
+conda activate orbitgen
+pip install torch torchvision torchaudio
+pip install diffusers accelerate transformers imageio[ffmpeg] opencv-python-headless scipy numpy Pillow pandas
+
+# TextureOptimizer (module 3): Python 3.10 + o_voxel
+conda create -n trellis2 python=3.10
+conda activate trellis2
+pip install o_voxel torch numpy opencv-python Pillow imageio trimesh utils3d gco-wrapper
+```
+
+### One-time Setup
+
+```bash
+# Blender 4.5+ for PBR preprocessing (TextureOptimizer)
+wget https://download.blender.org/release/Blender4.5/blender-4.5.1-linux-x64.tar.xz
+tar -xf blender-4.5.1-linux-x64.tar.xz -C /tmp/
+export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
+
+# RMBG-2.0 (background removal, OrbitVideoGen)
+# Download from Hugging Face to /path/to/RMBG-2.0
+```
+
 ## Quick Start
 
 ### Download Example Data
