@@ -165,19 +165,24 @@ python scripts/batch_render_mr.py \
 
 ```bash
 conda activate trellis2
-# 参考代码: OrbitVideoGen/examples/ 下的 bake_pbr.py (UV atlas + nvdiffrast)
-python bake_pbr.py \
-    --sha256 "000-000/{uuid}" \
-    --video_path "./albedo_h.mp4" \
+python scripts/bake_pbr.py \
+    --sha256 "000-058/{uuid}" \
+    --glb_path ./glbs_normalized/{uuid}.glb \
+    --albedo_h_video ./albedo_h.mp4 \
+    --albedo_v_video ./albedo_v.mp4 \
+    --mr_h_video ./mr.mp4 \
+    --mr_v_video ./mr_v.mp4 \
+    --h_meta ./meta_h.json \
+    --v_meta ./meta_v.json \
     --output_dir ./output
 ```
 
 | 输入 | 来源 |
 |------|------|
-| `albedo_h.mp4`, `albedo_v.mp4` | H/V 渲染产出的 albedo 视频 |
-| `mr.mp4`, `mr_v.mp4` | H/V 的 metallic/roughness 视频 |
-| `{uuid}.glb` | `glbs_normalized/` 目录下的归一化网格 |
-| meta.json | 自动从 Objaverse metadata 路径读取 |
+| `--albedo_h_video`, `--albedo_v_video` | H/V 渲染产出的 albedo 视频 |
+| `--mr_h_video`, `--mr_v_video` | H/V 的 metallic/roughness 视频 |
+| `--glb_path` | `glbs_normalized/` 目录下的归一化网格 |
+| `--h_meta`, `--v_meta` | H/V 相机参数 (meta.json) |
 
 | 输出 | 说明 |
 |------|------|

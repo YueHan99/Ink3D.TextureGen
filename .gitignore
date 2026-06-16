@@ -1,8 +1,13 @@
+# Compiled Python
 __pycache__/
 *.pyc
 *.so
-.venv/
 *.egg-info/
+
+# Virtual env
+.venv/
+
+# OS
 .DS_Store
 
 # Model weights & large files
@@ -13,15 +18,21 @@ __pycache__/
 *.pickle
 *.vxz
 *.npy
+OrbitVideoGen/models/
+OrbitVideoGen/diffsynth/models/
 
 # Training outputs
 models/train/
+
+# Output files
+*.mp4
 output/
 outputs/
 test_outputs/
 
 # Example data (large)
 tests/example_data/
+OrbitVideoGen/tests/example_data/
 
 # IDE
 .vscode/
@@ -34,36 +45,15 @@ blobmnt_tmp2/
 # Claude
 .claude/
 
-# IDE
-.vscode/
-.idea/
-
-# IDE
-.vscode/
-.idea/
-
-# Output files
-*.mp4
-output/
-outputs/
-
 # Data files
 *.csv
-*.npy
 
-# Model weights
-models/
-*.safetensors
-*.pth
-*.pt
-*.ckpt
-*.pickle
+# Bake test (cleaned version at Render/scripts/bake_pbr.py)
+bake_test/
 
-# Example data (large)
-tests/example_data/
-test_outputs/
+# Internal docs
+DATASET_UPLOAD_PLAN.md
+upload_dataset.py
 
-# Compiled Python
-__pycache__/
-*.pyc
-*.egg-info/
+# Assets (keep only what's referenced)
+assets/teaser.pdf
