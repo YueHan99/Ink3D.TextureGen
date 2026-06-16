@@ -12,6 +12,14 @@
 
 ---
 
+## 📰 News
+
+- **[2026/06/15]** 🔥🔥🔥 Initial release: end-to-end texture generation pipeline with H+V orbit video generation and PBR baking.
+- **[2026/06/10]** 🎉 Multi-view priority baking with H-first strategy achieves 99.9% voxel coverage.
+- **[2026/06/05]** ✨ Spatial and temporal H+V interleave training modes supported.
+
+---
+
 ## Overview
 
 **Ink3D** is an end-to-end pipeline for generating high-quality PBR textures on arbitrary 3D meshes using video generative models. Given a 3D mesh and a reference image, the system:
