@@ -35,7 +35,7 @@
 
 ## Quick Start: End-to-End Demo
 
-Walk through the full pipeline on the 034 cup model. Pre-computed outputs are provided for every step — skip any stage using the provided data.
+Walk through the full pipeline. Pre-computed outputs are provided for every step — skip any stage using the provided data.
 
 ### Step 0: Environment
 
