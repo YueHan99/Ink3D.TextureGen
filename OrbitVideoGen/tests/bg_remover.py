@@ -9,8 +9,8 @@ from transformers import AutoModelForImageSegmentation
 _model = None
 
 import os as _os
-_LOCAL = "/home/v-hanyue/local_weights/RMBG-2.0"
-_REMOTE = "/mnt/v-hanyue/20260610/local_weights/local_weights/RMBG-2.0"
+_LOCAL = os.environ.get("RMBG_PATH", "./RMBG-2.0")
+_REMOTE = os.environ.get("RMBG_PATH", "./RMBG-2.0")
 MODEL_PATH = _REMOTE if _os.path.exists(_REMOTE) else _LOCAL
 IMAGE_SIZE = (1024, 1024)
 

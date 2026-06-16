@@ -36,7 +36,7 @@ def main():
     parser.add_argument("--seed", type=int, default=3)
     parser.add_argument("--cfg_scale", type=float, default=6.0)
     parser.add_argument("--prompt", type=str, default="This is a 3D model")
-    parser.add_argument("--models_base", type=str, default="/home/v-hanyue/local_models")
+    parser.add_argument("--models_base", type=str, required=True, help="Base path for pretrained models")
     parser.add_argument("--model_ckpt_high", type=str, required=True)
     parser.add_argument("--model_ckpt_low", type=str, required=True)
     parser.add_argument("--no_bg_remove", action="store_true")

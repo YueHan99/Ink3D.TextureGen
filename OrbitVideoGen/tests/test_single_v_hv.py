@@ -3,7 +3,7 @@ Single-sample inference: V-track (vertical orbit, 768x768) with HV weights
 
 Usage:
   # Step 1: run H inference
-  export PYTHONPATH="/home/v-hanyue/workspace/Ink3D/OrbitVideoGen:${PYTHONPATH}"
+  cd OrbitVideoGen && export PYTHONPATH="$(pwd):${PYTHONPATH}"
   python tests/test_single_h.py --ref_image /path/to/ref.png --video_dir /path/to/h120/ --output output_h.mp4
 
   # Step 2: run V inference with H first-frame replacement
@@ -48,9 +48,9 @@ def main():
     parser.add_argument("--cfg_scale", type=float, default=6.0)
     parser.add_argument("--prompt", type=str, default="This is a 3D model")
     parser.add_argument("--model_ckpt_high", type=str,
-        default="/home/v-hanyue/local_models/lora_ckpt/hv_high_noise_step-1700.safetensors")
+        required=True, help="Path to high-noise LoRA checkpoint")
     parser.add_argument("--model_ckpt_low", type=str,
-        default="/home/v-hanyue/local_models/lora_ckpt/hv_low_noise_step-2000.safetensors")
+        required=True, help="Path to low-noise LoRA checkpoint")
     parser.add_argument("--no_bg_remove", action="store_true", help="Skip background removal")
     args = parser.parse_args()
 
@@ -63,10 +63,10 @@ def main():
         torch_dtype=torch.bfloat16,
         device="cuda:0",
         model_configs=[
-            ModelConfig(path="/home/v-hanyue/local_models/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/high_noise_model/diffusion_pytorch_model.safetensors", offload_device="cpu"),
-            ModelConfig(path="/home/v-hanyue/local_models/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/low_noise_model/diffusion_pytorch_model.safetensors", offload_device="cpu"),
-            ModelConfig(path="/home/v-hanyue/local_models/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/models_t5_umt5-xxl-enc-bf16.pth", offload_device="cpu"),
-            ModelConfig(path="/home/v-hanyue/local_models/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/Wan2.1_VAE.pth", offload_device="cpu"),
+            ModelConfig(path=f"{args.models_base}/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/high_noise_model/diffusion_pytorch_model.safetensors", offload_device="cpu"),
+            ModelConfig(path=f"{args.models_base}/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/low_noise_model/diffusion_pytorch_model.safetensors", offload_device="cpu"),
+            ModelConfig(path=f"{args.models_base}/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/models_t5_umt5-xxl-enc-bf16.pth", offload_device="cpu"),
+            ModelConfig(path=f"{args.models_base}/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/Wan2.1_VAE.pth", offload_device="cpu"),
         ],
     )
 

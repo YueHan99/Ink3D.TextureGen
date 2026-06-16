@@ -1,6 +1,6 @@
 accelerate launch examples/wanvideo/model_training/train_14b_ref_normal_revise_light_aug_61_revise2_imageref0322.py \
   --data_file_keys "video,control_video,reference_image" \
-  --dataset_base_path '/mnt/v-hanyue/objaverse_60k_120hv/videos_curve' \
+  --dataset_base_path "${DATASET_BASE:-/mnt/v-hanyue/objaverse_60k_120hv/videos_curve}" \
   --dataset_metadata_path position2albedo_all_321hv.csv \
   --height 512 \
   --width 1024 \

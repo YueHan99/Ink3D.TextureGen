@@ -546,7 +546,7 @@ def graphcut_view_selection(coord, resolution, all_rgb, all_conf,
 
     return labels
 
-# /home/v-hanyue/blobmnt/TexverseDataset/teaser/obja/output0302hv/618c8abca2864305b9ec2362ed5d4d28_618c8abca2864305b9ec2362ed5d4d28对应/home/v-hanyue/blobmnt/TexverseDataset/teaser/obja/glbs/618c8abca2864305b9ec2362ed5d4d28.glb
+# /path/to/dataset/.../model.glb
 def main():
     parser = argparse.ArgumentParser(
         description="Convert .glb to PBR .vxz using Graph-Cut optimized view selection")

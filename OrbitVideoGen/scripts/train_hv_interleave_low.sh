@@ -3,13 +3,13 @@
 export PYTHONPATH="$(cd "$(dirname "$0")" && pwd):${PYTHONPATH}"
 
 accelerate launch examples/wanvideo/model_training/train_14b_hv_interleave.py \
-  --dataset_base_path '/mnt/v-hanyue' \
+  --dataset_base_path "${DATASET_BASE:-/mnt/v-hanyue}" \
   --dataset_metadata_path Ink3D/OrbitVideoGen/position2albedo_all_321_hv_paired.csv \
   --data_file_keys "h_video,h_control_video,v_video,v_control_video" \
   --height 512 \
   --width 512 \
   --dataset_repeat 1 \
-  --model_paths '["/mnt/v-hanyue/20260610/local_models/local_models/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/low_noise_model/diffusion_pytorch_model.safetensors", "/mnt/v-hanyue/20260610/local_models/local_models/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/models_t5_umt5-xxl-enc-bf16.pth", "/mnt/v-hanyue/20260610/local_models/local_models/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/Wan2.1_VAE.pth"]' \
+  --model_paths '["/${MODELS_BASE:-/mnt/v-hanyue/local_models}/PAI/Wan2.2-Fun-A14B-Control/Wan2.2-Fun-A14B-Control/low_noise_model/diffusion_pytorch_model.safetensors", "/${MODELS_BASE:-/mnt/v-hanyue/local_models}/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/models_t5_umt5-xxl-enc-bf16.pth", "/${MODELS_BASE:-/mnt/v-hanyue/local_models}/Wan-AI/Wan2.1-T2V-1.3B/Wan2.1-T2V-1.3B/Wan2.1_VAE.pth"]' \
   --learning_rate 1e-4 \
   --num_epochs 5 \
   --save_steps 50 \

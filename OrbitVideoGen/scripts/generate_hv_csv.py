@@ -3,7 +3,7 @@
 Generate merged H+V CSV for training.
 - H rows: prefix paths with objaverse_60k_120h/videos_curve/
 - V rows: prefix paths with objaverse_60k_120v/videos_curve/, position.mp4 -> position_flip.mp4
-- base_path should be set to /mnt/v-hanyue/ (remote) or /home/v-hanyue/blobmnt/ (local)
+- base_path should be set to your dataset base path
 """
 import pandas as pd
 

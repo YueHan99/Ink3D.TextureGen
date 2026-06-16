@@ -875,11 +875,6 @@ class VideoDataset(torch.utils.data.Dataset):
                 path_dir = os.path.dirname(path)
                 parts = os.path.normpath(path_dir).split(os.sep)[-2:]
                 conf = os.path.join(*parts)
-                # vertices = np.load(f'/home/v-hanyue/blobmnt/objarverse/hf-objaverse-v1/vertice_face_uv/{conf}/vertices.npy')
-                # faces = np.load(f'/home/v-hanyue/blobmnt/objarverse/hf-objaverse-v1/vertice_face_uv/{conf}/faces.npy')
-                # uvs = np.load(f'/home/v-hanyue/blobmnt/objarverse/hf-objaverse-v1/vertice_face_uv/{conf}/uvs.npy')
-                # projections = torch.load('/home/v-hanyue/workspace/DiffSynth-Studio/projections.pt')
-                # views = torch.load('/home/v-hanyue/workspace/DiffSynth-Studio/views.pt')
   
                 # data['vertices'] = vertices
                 # data['faces'] = faces

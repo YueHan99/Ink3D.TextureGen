@@ -1,11 +1,11 @@
 #!/bin/bash
 # Batch H+V inference for all ready cases
 set -e
-cd /home/v-hanyue/workspace/Ink3D/OrbitVideoGen
+cd "$(dirname "$0")/.."
 export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
-CKPT_HIGH="/home/v-hanyue/local_models/lora_ckpt/hv_high_noise_step-1700.safetensors"
-CKPT_LOW="/home/v-hanyue/local_models/lora_ckpt/hv_low_noise_step-2000.safetensors"
+CKPT_HIGH="${CKPT_HIGH:-}"
+CKPT_LOW="${CKPT_LOW:-}"
 BASE="tests/example_data"
 OUTDIR="output/batch_hv"
 

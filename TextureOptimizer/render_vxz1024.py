@@ -12,13 +12,13 @@ resolution = 512
 # sha256 = '0209_a44_debug'
 
 # Load data
-# coords, attributes = o_voxel.io.read_vxz(f'/home/v-hanyue/blobmnt/objarverse/hf-objaverse-v1/uv1024/{sha256}/bake_512.vxz', num_threads=4)
+# coords, attributes = o_voxel.io.read_vxz("/path/to/bake_512.vxz", num_threads=4)
 input_p = sys.argv[1]
 out = input_p.replace('vxz', 'mp4')
 coords, attributes = o_voxel.io.read_vxz(input_p, num_threads=4)
 attributes['base_color'] = attributes['top6'][:,:3]
 
-# coords, attributes = o_voxel.io.read_vxz(f'/home/v-hanyue/blobmnt/objarverse-trellis-tex/pbr_voxels_top1024_revise/c34aebb9975a493eb874d1fd3749c0ee.vxz', num_threads=4)
+# coords, attributes = o_voxel.io.read_vxz(f'/path/to/output.vxz', num_threads=4)
 # attributes['base_color'] = attributes['top6'][:,:3]
 
 voxel_indices = coords
@@ -219,7 +219,7 @@ renderer = o_voxel.rasterize.VoxelRenderer(
 
 extrsh, intrsh = render_video_horizontal_geo(resolution=resolution)
 extrsv, intrsv = render_video_vertical_geo(resolution=resolution)
-# projec = torch.load('/home/v-hanyue/workspace/DiffSynth-Studio/projections.pt')
+# projec = torch.load('/path/to/projections.pt')
 # extrs = projec[-121:]
 # import pdb;pdb.set_trace()
 extrs = extrsh + extrsv
