@@ -122,6 +122,43 @@ output/
         └── meta.json               # Camera parameters & render info
 ```
 
+## Dataset Preparation (Batch)
+
+For large-scale dataset rendering, two batch scripts handle multi-threaded, resumable processing of GLB lists.
+
+### Albedo / Normal / Position pass
+
+Renders multi-pass channels (rgb, albedo, normal, position, depth, mask) for H and V orbits.
+
+```bash
+python scripts/batch_render_albedo.py \
+    --input_json selected_glb_paths.json \
+    --base_glb_path /path/to/glbs \
+    --output_dir_h ./output_h --output_dir_v ./output_v \
+    --num_camera 120 --threads 4 --skip 0
+```
+
+### Metallic / Roughness pass
+
+Renders PBR material properties (mr.mp4). Requires `render_mr.py`.
+
+```bash
+python scripts/batch_render_mr.py \
+    --input_json selected_glb_paths.json \
+    --base_glb_path /path/to/glbs \
+    --output_dir_h ./output_h --output_dir_v ./output_v \
+    --num_camera 120 --threads 4
+```
+
+| Argument | Description |
+|----------|-------------|
+| `--input_json` | JSON list of relative GLB paths |
+| `--base_glb_path` | Root directory for GLB files |
+| `--output_dir_h/v` | Output directories for H/V orbits |
+| `--num_camera` | Cameras per orbit (120) |
+| `--threads` | Parallel workers (1) |
+| `--skip` | Resume from index N |
+
 ## Command-Line Options
 
 | Argument | Default | Description |
