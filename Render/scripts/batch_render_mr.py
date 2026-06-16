@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Batch rendering for metallic/roughness (MR) channel.
-Requires a PBR-capable render script (render_mr.py).
+Uses render.py --mr to render only the MR pass (skips albedo/normal/position).
 
 Output per GLB: mr.mp4
 
@@ -17,7 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 
 SCRIPT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RENDER_SCRIPT = os.path.join(SCRIPT_DIR, "render_mr.py")
+RENDER_SCRIPT = os.path.join(SCRIPT_DIR, "render.py")
 
 VIDEO_TYPES = ["mr"]
 print_lock = threading.Lock()
@@ -47,6 +47,7 @@ def render_orbit(glb_path, relative_path, output_dir, orbit, args):
         "--orbit", orbit,
         "--num_cameras", str(args.num_camera),
         "--model_name", f"{get_dir_and_id(relative_path)[0]}/{get_dir_and_id(relative_path)[1]}",
+        "--mr",
     ]
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=72000)

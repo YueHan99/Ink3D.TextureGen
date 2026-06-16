@@ -140,7 +140,7 @@ python scripts/batch_render_albedo.py \
 
 ### Metallic / Roughness pass
 
-Renders PBR material properties (mr.mp4). Requires `render_mr.py`.
+Renders PBR material properties (mr.mp4) using `render.py --mr`.
 
 ```bash
 python scripts/batch_render_mr.py \

@@ -181,6 +181,9 @@ def render_single_model(model_path, render_dir, args):
         file_prefix="albedo_",
         color_mode="RGBA",
     )
+    if args.mr:
+        enable_pbr_output(output_dir=image_output_dir, attr_name="Metallic", file_prefix="metallic_", color_mode="BW")
+        enable_pbr_output(output_dir=image_output_dir, attr_name="Roughness", file_prefix="roughness_", color_mode="BW")
     enable_position_output(
         output_dir=image_output_dir,
         file_prefix="position_",
@@ -277,6 +280,24 @@ def render_single_model(model_path, render_dir, args):
                 writer.append_data(imageio.imread(file))
         meta_info["pbr_channels"]["position"] = "position.mp4"
 
+    # MR (Metallic + Roughness) video
+    if args.mr:
+        metallic_files = sorted(glob(os.path.join(image_output_dir, "metallic_*.png")))
+        roughness_files = sorted(glob(os.path.join(image_output_dir, "roughness_*.png")))
+        if metallic_files and roughness_files:
+            mr_path = os.path.join(video_output_dir, "mr.mp4")
+            video_params = ['-crf', '10', '-preset', 'medium', '-pix_fmt', 'yuv444p']
+            with imageio.get_writer(mr_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+                for mf, rf in zip(metallic_files, roughness_files):
+                    m = imageio.imread(mf)
+                    r = imageio.imread(rf)
+                    # Combine: metallic→R, roughness→G, 0→B
+                    mr_frame = np.zeros((args.height, args.width, 3), dtype=np.uint8)
+                    mr_frame[:, :, 2] = m if m.ndim == 2 else m[:, :, 0]  # metallic→B
+                    mr_frame[:, :, 1] = r if r.ndim == 2 else r[:, :, 0]  # roughness→G
+                    writer.append_data(mr_frame)
+            meta_info["pbr_channels"]["mr"] = "mr.mp4"
+
     # Save metadata
     for i in range(len(cam_pos)):
         meta_info["locations"].append({
@@ -330,6 +351,7 @@ def parse_args():
     parser.add_argument("--scene_scale", type=float, default=1.0, help="Scene normalization scale")
     parser.add_argument("--model_name", type=str, default=None, help="Override model name (default: GLB filename)")
     parser.add_argument("--flip_x", action="store_true", help="Flip right axis (left-right mirror) for vertical orbit")
+    parser.add_argument("--mr", action="store_true", help="Enable Metallic/Roughness AOV output (mr.mp4)")
 
     return parser.parse_args()
 
