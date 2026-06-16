@@ -14,10 +14,10 @@
 
 ## 📰 News
 
-- **[2026/06/15]** 🏗️ Dataset preparation: multi-threaded batch GLB rendering with resumable H/V passes — see [`Render/scripts/batch_render_albedo.py`](Render/scripts/batch_render_albedo.py) and [`batch_render_mr.py`](Render/scripts/batch_render_mr.py).
+
 - **[2026/06/15]** 🔥🔥🔥 Initial release. See [`Render/`](Render/README.md) for condition video rendering, [`OrbitVideoGen/`](OrbitVideoGen/README.md) for video generation training & inference, and [`TextureOptimizer/`](TextureOptimizer/README.md) for texture baking.
 - **[2026/06/15]** 📦 Example data & pretrained weights available on [Hugging Face](https://huggingface.co/datasets/Yuehavingfun/ink3d-example-data).
-
+- **[2026/06/15]** 🏗️ Dataset preparation: batch GLB rendering to custom camera-trajectory videos (rgb, albedo, normal, position, depth, mask, metalness/roughness) — see [`Render/scripts/batch_render_albedo.py`](Render/scripts/batch_render_albedo.py) and [`batch_render_mr.py`](Render/scripts/batch_render_mr.py).
 
 ---
 
