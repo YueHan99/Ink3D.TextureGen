@@ -34,6 +34,7 @@ from ink3d_render.render_output import (
     enable_position_output,
 )
 from ink3d_render.render_output_a import enable_pbr_output
+from ink3d_render.render_output_mr import enable_pbr_output as enable_pbr_output_mr
 from ink3d_render.utils import convert_depth_to_webp, convert_normal_to_webp
 
 
@@ -273,9 +274,9 @@ def render_single_model(model_path, render_dir, args):
 
     # 6. Configure render outputs
     if args.mr:
-        # MR pass: metallic/roughness only (separate render from albedo/normal/position)
-        enable_pbr_output(output_dir=image_output_dir, attr_name="Metallic", file_prefix="metallic_", color_mode="BW")
-        enable_pbr_output(output_dir=image_output_dir, attr_name="Roughness", file_prefix="roughness_", color_mode="BW")
+        # MR pass: metallic/roughness only (Raw color transform, separate render)
+        enable_pbr_output_mr(output_dir=image_output_dir, attr_name="Metallic", file_prefix="metallic_", color_mode="BW")
+        enable_pbr_output_mr(output_dir=image_output_dir, attr_name="Roughness", file_prefix="roughness_", color_mode="BW")
     else:
         # Albedo pass: color, depth, normal, albedo, position
         enable_color_output(
