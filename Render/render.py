@@ -291,10 +291,11 @@ def render_single_model(model_path, render_dir, args):
                 for mf, rf in zip(metallic_files, roughness_files):
                     m = imageio.imread(mf)
                     r = imageio.imread(rf)
-                    # Combine: metallic→R, roughness→G, 0→B
+                    # R=255 unused, G=roughness, B=metallic
                     mr_frame = np.zeros((args.height, args.width, 3), dtype=np.uint8)
-                    mr_frame[:, :, 2] = m if m.ndim == 2 else m[:, :, 0]  # metallic→B
-                    mr_frame[:, :, 1] = r if r.ndim == 2 else r[:, :, 0]  # roughness→G
+                    mr_frame[:, :, 0] = 255  # R: unused
+                    mr_frame[:, :, 1] = r if r.ndim == 2 else r[:, :, 0]  # G: roughness
+                    mr_frame[:, :, 2] = m if m.ndim == 2 else m[:, :, 0]  # B: metallic
                     writer.append_data(mr_frame)
             meta_info["pbr_channels"]["mr"] = "mr.mp4"
 

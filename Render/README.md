@@ -112,15 +112,28 @@ output/
         │   ├── normal_0001.png     # Normal map
         │   ├── albedo_0001.png     # Albedo (base color)
         │   ├── position_0001.exr   # Position (EXR)
-        │   └── position_0001.png   # Position (normalized PNG)
+        │   ├── position_0001.png   # Position (normalized PNG)
+        │   ├── metallic_0001.png   # Metallic (single channel, --mr only)
+        │   └── roughness_0001.png  # Roughness (single channel, --mr only)
         ├── rgb.mp4                 # Color video (white background)
         ├── mask.mp4                # Alpha mask video
         ├── depth.mp4               # Depth video
         ├── normal.mp4              # Normal video
         ├── albedo.mp4              # Albedo video
         ├── position.mp4            # Position video
+        ├── mr.mp4                  # Metallic/Roughness video (--mr only, see below)
         └── meta.json               # Camera parameters & render info
 ```
+
+### MR Video Channel Layout
+
+`mr.mp4` combines metallic and roughness into a 3-channel RGB video:
+
+| Channel | Value | Description |
+|---------|-------|-------------|
+| R (0) | `255` | Unused (constant white) |
+| G (1) | roughness | Roughness map (0-255) |
+| B (2) | metallic | Metallic map (0-255) |
 
 ## Dataset Preparation (Batch)
 
