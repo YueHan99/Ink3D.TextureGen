@@ -291,11 +291,18 @@ def render_single_model(model_path, render_dir, args):
                 for mf, rf in zip(metallic_files, roughness_files):
                     m = imageio.imread(mf)
                     r = imageio.imread(rf)
+                    # AOV output is 16-bit PNG (color_depth=16). Normalize to 8-bit.
+                    if m.dtype == np.uint16 or m.max() > 255:
+                        m = (m.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
+                    if r.dtype == np.uint16 or r.max() > 255:
+                        r = (r.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
+                    m_flat = m if m.ndim == 2 else m[:, :, 0]
+                    r_flat = r if r.ndim == 2 else r[:, :, 0]
                     # R=255 unused, G=roughness, B=metallic
                     mr_frame = np.zeros((args.height, args.width, 3), dtype=np.uint8)
                     mr_frame[:, :, 0] = 255  # R: unused
-                    mr_frame[:, :, 1] = r if r.ndim == 2 else r[:, :, 0]  # G: roughness
-                    mr_frame[:, :, 2] = m if m.ndim == 2 else m[:, :, 0]  # B: metallic
+                    mr_frame[:, :, 1] = r_flat  # G: roughness
+                    mr_frame[:, :, 2] = m_flat  # B: metallic
                     writer.append_data(mr_frame)
             meta_info["pbr_channels"]["mr"] = "mr.mp4"
 
