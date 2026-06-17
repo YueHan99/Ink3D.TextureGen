@@ -58,6 +58,110 @@ def convert_position_to_png(exr_files, png_files):
         imageio.imwrite(png_file, pos_img_normalized)
 
 
+def _build_mr_video(image_output_dir, video_output_dir, args, video_params, meta_info):
+    """Build mr.mp4 from metallic/roughness frames (MR pass only)."""
+    metallic_files = sorted(glob(os.path.join(image_output_dir, "metallic_*.png")))
+    roughness_files = sorted(glob(os.path.join(image_output_dir, "roughness_*.png")))
+    if not metallic_files or not roughness_files:
+        return
+    mr_path = os.path.join(video_output_dir, "mr.mp4")
+    with imageio.get_writer(mr_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+        for mf, rf in zip(metallic_files, roughness_files):
+            m = imageio.imread(mf)
+            r = imageio.imread(rf)
+            # AOV output is 16-bit PNG (color_depth=16). Normalize to 8-bit.
+            if m.dtype == np.uint16 or m.max() > 255:
+                m = (m.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
+            if r.dtype == np.uint16 or r.max() > 255:
+                r = (r.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
+            m_flat = m if m.ndim == 2 else m[:, :, 0]
+            r_flat = r if r.ndim == 2 else r[:, :, 0]
+            # R=255 unused, G=roughness, B=metallic
+            mr_frame = np.zeros((args.height, args.width, 3), dtype=np.uint8)
+            mr_frame[:, :, 0] = 255
+            mr_frame[:, :, 1] = r_flat
+            mr_frame[:, :, 2] = m_flat
+            writer.append_data(mr_frame)
+    meta_info["pbr_channels"]["mr"] = "mr.mp4"
+
+
+def _build_albedo_videos(image_output_dir, video_output_dir, args, video_params, meta_info):
+    """Build all standard output videos (albedo pass)."""
+    min_depth, scale = None, None
+
+    # Depth: EXR → PNG
+    depth_exr = sorted(glob(os.path.join(image_output_dir, "depth_*.exr")))
+    depth_png = [f.replace(".exr", ".png") for f in depth_exr]
+    if depth_exr:
+        min_depth, scale = convert_depth_to_webp(depth_exr, depth_png)
+
+    # Normal: EXR → PNG
+    for file in os.listdir(image_output_dir):
+        if file.startswith("normal_") and file.endswith(".exr"):
+            filepath = os.path.join(image_output_dir, file)
+            render_filepath = filepath.replace("normal_", "render_")
+            png_path = filepath.replace(".exr", ".png")
+            convert_normal_to_webp(filepath, png_path, render_filepath)
+
+    # RGB + Mask video
+    render_files = sorted(glob(os.path.join(image_output_dir, "render_*.png")))
+    if render_files:
+        rgb_path = os.path.join(video_output_dir, "rgb.mp4")
+        mask_path = os.path.join(video_output_dir, "mask.mp4")
+        with imageio.get_writer(rgb_path, fps=args.fps, codec='libx264', output_params=video_params) as rgb_w, \
+             imageio.get_writer(mask_path, fps=args.fps, codec='libx264', output_params=video_params) as mask_w:
+            for file in render_files:
+                image = imageio.imread(file)
+                mask = image[:, :, 3]
+                white_bg = np.ones((args.height, args.width, 3), dtype=np.uint8) * 255
+                alpha = image[:, :, 3:4] / 255.0
+                white_image = image[:, :, :3] * alpha + white_bg * (1 - alpha)
+                rgb_w.append_data(white_image.astype(np.uint8))
+                mask_w.append_data(mask)
+        meta_info["pbr_channels"]["color"] = "rgb.mp4"
+        meta_info["pbr_channels"]["mask"] = "mask.mp4"
+
+    # Normal video
+    normal_files = sorted(glob(os.path.join(image_output_dir, "normal_*.png")))
+    if normal_files:
+        video_path = os.path.join(video_output_dir, "normal.mp4")
+        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+            for file in normal_files:
+                writer.append_data(imageio.imread(file))
+        meta_info["pbr_channels"]["normal"] = "normal.mp4"
+
+    # Depth video
+    depth_files = sorted(glob(os.path.join(image_output_dir, "depth_*.png")))
+    if depth_files:
+        video_path = os.path.join(video_output_dir, "depth.mp4")
+        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+            for file in depth_files:
+                writer.append_data(imageio.imread(file))
+        meta_info["pbr_channels"]["depth"] = "depth.mp4"
+
+    # Albedo video
+    albedo_files = sorted(glob(os.path.join(image_output_dir, "albedo_*.png")))
+    if albedo_files:
+        video_path = os.path.join(video_output_dir, "albedo.mp4")
+        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+            for file in albedo_files:
+                writer.append_data(imageio.imread(file))
+        meta_info["pbr_channels"]["albedo"] = "albedo.mp4"
+
+    # Position video
+    position_files = sorted(glob(os.path.join(image_output_dir, "position_*.exr")))
+    if position_files:
+        png_files = [f.replace(".exr", ".png") for f in position_files]
+        convert_position_to_png(position_files, png_files)
+        video_path = os.path.join(video_output_dir, "position.mp4")
+        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
+            for file in png_files:
+                writer.append_data(imageio.imread(file))
+        meta_info["pbr_channels"]["position"] = "position.mp4"
+
+    return min_depth, scale
+
+
 def clear_animation_data():
     """Clear all animation data from the scene."""
     print("Clearing animation data...")
@@ -168,28 +272,31 @@ def render_single_model(model_path, render_dir, args):
         cameras.append(camera)
 
     # 6. Configure render outputs
-    enable_color_output(
-        width=args.width, height=args.height,
-        output_dir=image_output_dir, mode="PNG",
-        film_transparent=True,
-    )
-    enable_depth_output(image_output_dir)
-    enable_normals_output(image_output_dir)
-    enable_pbr_output(
-        output_dir=image_output_dir,
-        attr_name="Base Color",
-        file_prefix="albedo_",
-        color_mode="RGBA",
-    )
     if args.mr:
+        # MR pass: metallic/roughness only (separate render from albedo/normal/position)
         enable_pbr_output(output_dir=image_output_dir, attr_name="Metallic", file_prefix="metallic_", color_mode="BW")
         enable_pbr_output(output_dir=image_output_dir, attr_name="Roughness", file_prefix="roughness_", color_mode="BW")
-    enable_position_output(
-        output_dir=image_output_dir,
-        file_prefix="position_",
-        space="WORLD",
-        file_format="OPEN_EXR",
-    )
+    else:
+        # Albedo pass: color, depth, normal, albedo, position
+        enable_color_output(
+            width=args.width, height=args.height,
+            output_dir=image_output_dir, mode="PNG",
+            film_transparent=True,
+        )
+        enable_depth_output(image_output_dir)
+        enable_normals_output(image_output_dir)
+        enable_pbr_output(
+            output_dir=image_output_dir,
+            attr_name="Base Color",
+            file_prefix="albedo_",
+            color_mode="RGBA",
+        )
+        enable_position_output(
+            output_dir=image_output_dir,
+            file_prefix="position_",
+            space="WORLD",
+            file_format="OPEN_EXR",
+        )
 
     # 7. Render
     scene_manager.render()
@@ -205,106 +312,15 @@ def render_single_model(model_path, render_dir, args):
         "locations": [],
     }
 
-    min_depth, scale = None, None
-
-    # Depth: EXR → PNG
-    render_files = sorted(glob(os.path.join(image_output_dir, "depth_*.exr")))
-    output_files = [f.replace(".exr", ".png") for f in render_files]
-    if render_files:
-        min_depth, scale = convert_depth_to_webp(render_files, output_files)
-
-    # Normal: EXR → PNG
-    for file in os.listdir(image_output_dir):
-        if file.startswith("normal_") and file.endswith(".exr"):
-            filepath = os.path.join(image_output_dir, file)
-            render_filepath = filepath.replace("normal_", "render_")
-            png_path = filepath.replace(".exr", ".png")
-            convert_normal_to_webp(filepath, png_path, render_filepath)
-
-    # Create videos
     video_params = ['-crf', '10', '-preset', 'medium', '-pix_fmt', 'yuv444p']
 
-    # RGB + Mask video
-    render_files = sorted(glob(os.path.join(image_output_dir, "render_*.png")))
-    if render_files:
-        rgb_path = os.path.join(video_output_dir, "rgb.mp4")
-        mask_path = os.path.join(video_output_dir, "mask.mp4")
-        with imageio.get_writer(rgb_path, fps=args.fps, codec='libx264', output_params=video_params) as rgb_w, \
-             imageio.get_writer(mask_path, fps=args.fps, codec='libx264', output_params=video_params) as mask_w:
-            for file in render_files:
-                image = imageio.imread(file)
-                mask = image[:, :, 3]
-                white_bg = np.ones((args.height, args.width, 3), dtype=np.uint8) * 255
-                alpha = image[:, :, 3:4] / 255.0
-                white_image = image[:, :, :3] * alpha + white_bg * (1 - alpha)
-                rgb_w.append_data(white_image.astype(np.uint8))
-                mask_w.append_data(mask)
-        meta_info["pbr_channels"]["color"] = "rgb.mp4"
-        meta_info["pbr_channels"]["mask"] = "mask.mp4"
-
-    # Normal video
-    normal_files = sorted(glob(os.path.join(image_output_dir, "normal_*.png")))
-    if normal_files:
-        video_path = os.path.join(video_output_dir, "normal.mp4")
-        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
-            for file in normal_files:
-                writer.append_data(imageio.imread(file))
-        meta_info["pbr_channels"]["normal"] = "normal.mp4"
-
-    # Depth video
-    depth_files = sorted(glob(os.path.join(image_output_dir, "depth_*.png")))
-    if depth_files:
-        video_path = os.path.join(video_output_dir, "depth.mp4")
-        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
-            for file in depth_files:
-                writer.append_data(imageio.imread(file))
-        meta_info["pbr_channels"]["depth"] = "depth.mp4"
-
-    # Albedo video
-    albedo_files = sorted(glob(os.path.join(image_output_dir, "albedo_*.png")))
-    if albedo_files:
-        video_path = os.path.join(video_output_dir, "albedo.mp4")
-        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
-            for file in albedo_files:
-                writer.append_data(imageio.imread(file))
-        meta_info["pbr_channels"]["albedo"] = "albedo.mp4"
-
-    # Position video
-    position_files = sorted(glob(os.path.join(image_output_dir, "position_*.exr")))
-    if position_files:
-        png_files = [f.replace(".exr", ".png") for f in position_files]
-        convert_position_to_png(position_files, png_files)
-        video_path = os.path.join(video_output_dir, "position.mp4")
-        with imageio.get_writer(video_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
-            for file in png_files:
-                writer.append_data(imageio.imread(file))
-        meta_info["pbr_channels"]["position"] = "position.mp4"
-
-    # MR (Metallic + Roughness) video
     if args.mr:
-        metallic_files = sorted(glob(os.path.join(image_output_dir, "metallic_*.png")))
-        roughness_files = sorted(glob(os.path.join(image_output_dir, "roughness_*.png")))
-        if metallic_files and roughness_files:
-            mr_path = os.path.join(video_output_dir, "mr.mp4")
-            video_params = ['-crf', '10', '-preset', 'medium', '-pix_fmt', 'yuv444p']
-            with imageio.get_writer(mr_path, fps=args.fps, codec='libx264', output_params=video_params) as writer:
-                for mf, rf in zip(metallic_files, roughness_files):
-                    m = imageio.imread(mf)
-                    r = imageio.imread(rf)
-                    # AOV output is 16-bit PNG (color_depth=16). Normalize to 8-bit.
-                    if m.dtype == np.uint16 or m.max() > 255:
-                        m = (m.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
-                    if r.dtype == np.uint16 or r.max() > 255:
-                        r = (r.astype(np.float32) / 65535.0 * 255.0).astype(np.uint8)
-                    m_flat = m if m.ndim == 2 else m[:, :, 0]
-                    r_flat = r if r.ndim == 2 else r[:, :, 0]
-                    # R=255 unused, G=roughness, B=metallic
-                    mr_frame = np.zeros((args.height, args.width, 3), dtype=np.uint8)
-                    mr_frame[:, :, 0] = 255  # R: unused
-                    mr_frame[:, :, 1] = r_flat  # G: roughness
-                    mr_frame[:, :, 2] = m_flat  # B: metallic
-                    writer.append_data(mr_frame)
-            meta_info["pbr_channels"]["mr"] = "mr.mp4"
+        # MR pass: only produce mr.mp4
+        _build_mr_video(image_output_dir, video_output_dir, args, video_params, meta_info)
+        min_depth, scale = None, None
+    else:
+        # Albedo pass: produce all standard videos
+        min_depth, scale = _build_albedo_videos(image_output_dir, video_output_dir, args, video_params, meta_info)
 
     # Save metadata
     for i in range(len(cam_pos)):
