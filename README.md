@@ -102,6 +102,18 @@ python3 Render/render.py --input_file ./example_data/034/mesh.glb \
 *Skip if using pre-generated from Step 1.*
 
 ```bash
+# Download model weights
+pip install huggingface_hub
+mkdir -p weights && cd weights
+python3 -c "
+from huggingface_hub import snapshot_download
+snapshot_download('Yuehavingfun/orbitpainter-single', repo_type='model',
+                  local_dir='.')
+"
+cd ..
+# Downloads: weights/high_noise.safetensors, weights/low_noise.safetensors
+# Base models auto-downloaded on first run (~17GB)
+
 conda activate ink3d
 cd OrbitVideoGen && export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
@@ -109,16 +121,16 @@ python tests/test_single_h.py \
     --ref_image ../example_data/034/ref.png \
     --video_dir ../example_data/034/h120 \
     --models_base /path/to/local_models \
-    --model_ckpt_high ./weights/high_noise.safetensors \
-    --model_ckpt_low ./weights/low_noise.safetensors \
+    --model_ckpt_high ../weights/high_noise.safetensors \
+    --model_ckpt_low ../weights/low_noise.safetensors \
     --output ../example_data/034/h_034_gen.mp4
 
 python tests/test_single_v_hv.py \
     --ref_image ../example_data/034/ref.png \
     --video_dir ../example_data/034/v120 \
     --models_base /path/to/local_models \
-    --model_ckpt_high ./weights/high_noise.safetensors \
-    --model_ckpt_low ./weights/low_noise.safetensors \
+    --model_ckpt_high ../weights/high_noise.safetensors \
+    --model_ckpt_low ../weights/low_noise.safetensors \
     --output ../example_data/034/v_034_gen.mp4
 ```
 
