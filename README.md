@@ -57,6 +57,8 @@ export BLENDER_PATH=/tmp/blender-4.5.1-linux-x64/blender
 
 ### Step 1: Download Example Data
 
+**Pre-rendered condition videos + mesh:**
+
 ```bash
 pip install huggingface_hub
 python3 -c "
@@ -65,6 +67,16 @@ snapshot_download('Yuehavingfun/ink3d-example-data', repo_type='dataset',
                   allow_patterns='034/*', local_dir='./example_data')
 "
 # Downloads: mesh.glb, h120/, v120/, h_034_ref.mp4, v_034_ref.mp4
+```
+
+**Pre-generated textured videos (skip Step 2+3):**
+
+```bash
+# All example outputs: spider, cake, bag, panda, etc.
+snapshot_download('Yuehavingfun/orbitpainter_example_output', repo_type='dataset',
+                  local_dir='./example_output')
+# H-only format: h_{case}_G{idx}.mp4 (3072x768, 4-panel, 121 frames)
+# HV format:     hv_{case}_G{idx}.mp4 (6144x768, 8-panel, 61 frames, H=panel5 V=panel6)
 ```
 
 ### Step 2: Render Condition Videos
@@ -112,15 +124,37 @@ python tests/test_single_v_hv.py \
 
 ### Step 4: Bake PBR Texture
 
+**H-only video (4-panel, 3072×768):**
+
 ```bash
 conda activate trellis2
+python3 TextureOptimizer/voxelize.py ./example_data/spider/mesh.glb \
+    --video ./example_output/h_spider_G001.mp4 \
+    --video_num_cols 4 --video_col 2 \
+    --mode greedy --resolution 1024 \
+    --output_vxz ./output/spider_h.vxz
+```
+
+**HV combined video (8-panel, 6144×768, H=panel5, V=panel6):**
+
+```bash
+python3 TextureOptimizer/voxelize.py ./example_data/cake/mesh.glb \
+    --video ./example_output/hv_cake_G002.mp4 --video_num_cols 8 --video_col 4 \
+    --video_v ./example_output/hv_cake_G002.mp4 --video_v_num_cols 8 --video_v_col 5 \
+    --mode greedy --resolution 1024 --priority_mode \
+    --output_vxz ./output/cake_hv.vxz
+```
+
+**Separate H+V videos (4-panel each):**
+
+```bash
 python3 TextureOptimizer/voxelize.py ./example_data/034/mesh.glb \
     --video ./example_data/034/h_034_ref.mp4 \
     --video_v ./example_data/034/v_034_ref.mp4 \
     --video_num_cols 4 --video_col 2 --video_v_num_cols 4 --video_v_col 2 \
     --priority_mode --depth_eps 5e-4 \
     --output_vxz ./example_data/034/034.vxz --resolution 1024
-# Output: 034.vxz, 034.pickle, 034.mp4
+# Output: .vxz, .pickle
 ```
 
 ### Step 5: PBR Render
@@ -133,11 +167,26 @@ python3 TextureOptimizer/render_vxz.py \
 # Output: 034_pbr.mp4
 ```
 
+### Step 6: Export GLB
+
+```bash
+python3 TextureOptimizer/export_vxz_glb.py \
+    --vxz ./example_data/034/034.vxz --mesh ./example_data/034/034.pickle \
+    -o ./example_data/034/034.glb \
+    --roughness 0.4 --metallic 0.0  # plastic-like: roughness 0.4 (matte), metallic 0.0 (non-metal)
+# Tune roughness/metallic:
+#   Metal:     --roughness 0.15 --metallic 0.8
+#   Plastic:   --roughness 0.4  --metallic 0.0
+# Output: 034.glb with baked texture + constant metallic/roughness
+```
+
 | Step | Input | Output | Skip? |
 |------|-------|--------|-------|
 | Render | mesh.glb | h120/, v120/ | Use pre-rendered from HF |
 | Video Gen | h120/, v120/, ref.png | h_034_ref.mp4, v_034_ref.mp4 | Use pre-generated from HF |
-| Bake | mesh.glb + generated mp4 | 034.vxz, 034.pickle | — |
+| Bake | mesh.glb + generated mp4 | .vxz, .pickle | — |
+| PBR | .vxz + .pickle | _pbr.mp4 | — |
+| GLB | .vxz + .pickle | .glb | — |
 | PBR | 034.vxz + 034.pickle | 034_pbr.mp4 | — |
 
 All intermediate outputs available on [Hugging Face](https://huggingface.co/datasets/Yuehavingfun/ink3d-example-data/tree/main/034).
