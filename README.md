@@ -212,10 +212,7 @@ Each step produces specific output files — check they exist before moving on.
 
 ## Prepare Your Own Dataset
 
-- **Pre-rendered dataset (HF):** [`Yuehavingfun/Objaverse-PBR-render`](https://huggingface.co/datasets/Yuehavingfun/Objaverse-PBR-render) — ~23K Objaverse models, H+V 120-camera renders
-- **Pre-generated textures (HF):** [`Yuehavingfun/orbitpainter_example_output`](https://huggingface.co/datasets/Yuehavingfun/orbitpainter_example_output)
-- **Render your own GLB → videos:** [`Render/README.md`](Render/README.md#dataset-preparation-batch)
-- **Training:** [`OrbitVideoGen/README.md`](OrbitVideoGen/README.md)
+To render condition videos from your own GLB models, see [`Render/README.md`](Render/README.md#dataset-preparation-batch). The pre-rendered training dataset (~23K Objaverse models, H+V 120-camera renders) is available at [`Yuehavingfun/Objaverse-PBR-render`](https://huggingface.co/datasets/Yuehavingfun/Objaverse-PBR-render).
 
 ## Citation
 
