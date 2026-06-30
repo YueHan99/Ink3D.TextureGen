@@ -192,16 +192,23 @@ python3 TextureOptimizer/export_vxz_glb.py \
 # Output: 034.glb with baked texture + constant metallic/roughness
 ```
 
-| Step | Input | Output | Skip? |
-|------|-------|--------|-------|
-| Render | mesh.glb | h120/, v120/ | Use pre-rendered from HF |
-| Video Gen | h120/, v120/, ref.png | h_034_ref.mp4, v_034_ref.mp4 | Use pre-generated from HF |
-| Bake | mesh.glb + generated mp4 | .vxz, .pickle | — |
-| PBR | .vxz + .pickle | _pbr.mp4 | — |
-| GLB | .vxz + .pickle | .glb | — |
-| PBR | 034.vxz + 034.pickle | 034_pbr.mp4 | — |
+### Pipeline Checklist
 
-All intermediate outputs available on [Hugging Face](https://huggingface.co/datasets/Yuehavingfun/ink3d-example-data/tree/main/034).
+Each step produces specific output files — check they exist before moving on.
+
+| # | Step | What It Does | Input | Expected Output | Check |
+|---|------|-------------|-------|-----------------|-------|
+| 1 | **Download** | Get example data + weights | — | `example_data/034/`, `weights/` | `ls example_data/034/*.glb weights/*.safetensors` |
+| 2 | **Render** | Blender multi-pass rendering | `mesh.glb` | `h120/*.mp4`, `v120/*.mp4` (×6 channels) | `ls h120/albedo.mp4 v120/position.mp4` |
+| 3 | **Video Gen** | WAN 14B LoRA inference | `h120/` + `v120/` + `ref.png` + weights | `h_034_gen.mp4`, `v_034_gen.mp4` | `ffprobe h_034_gen.mp4` → 121 frames |
+| 4 | **Bake** | Voxelize + graph-cut texturing | `mesh.glb` + generated mp4 | `.vxz`, `.pickle` | check 100% coverage in logs |
+| 5 | **PBR Render** | Render baked result as video | `.vxz` + `.pickle` | `_pbr.mp4` | `ffprobe 034_pbr.mp4` |
+| 6 | **Export GLB** | UV-unwrap + export textured mesh | `.vxz` + `.pickle` | `.glb` | open in 3D viewer |
+
+**Skipping steps:** pre-rendered videos and pre-generated textures are on HF:
+- Step 1+2: `Yuehavingfun/ink3d-example-data` (rendered condition videos)
+- Step 3: `Yuehavingfun/orbitpainter_example_output` (pre-generated textured videos)
+- Weights: `Yuehavingfun/orbitpainter-single`
 
 ## Citation
 
