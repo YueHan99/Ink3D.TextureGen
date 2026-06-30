@@ -210,6 +210,64 @@ Each step produces specific output files — check they exist before moving on.
 - Step 3: `Yuehavingfun/orbitpainter_example_output` (pre-generated textured videos)
 - Weights: `Yuehavingfun/orbitpainter-single`
 
+## Prepare Your Own Dataset
+
+Rendering and training pipeline entry points. See individual READMEs for details.
+
+### Render GLB → Multi-View Videos
+
+| Script | Purpose | Orbit |
+|--------|---------|-------|
+| `Render/render.py` | Single model: albedo, normal, position, depth, RGB, mask | H or V, 120 cameras |
+| `Render/render.py --mr` | Additional metallic/roughness pass (separate render) | H or V, 120 cameras |
+| `Render/scripts/batch_render_albedo.py` | Batch rendering (albedo pass) | H + V |
+| `Render/scripts/batch_render_mr.py` | Batch rendering (MR pass) | H + V |
+
+**Important:** V orbit videos must be left-right flipped after rendering. The built-in `--flip_x` flag handles this during camera setup, or use `ffmpeg -vf hflip` post-render.
+
+### Bake Rendered Videos → PBR GLB
+
+| Script | Purpose |
+|--------|---------|
+| `Render/scripts/bake_pbr.py` | UV-atlas PBR bake with metallic/roughness (requires `conda activate trellis2`) |
+
+### Training Data Format (CSV)
+
+HV random training uses `position2albedo_all_321_hv.csv`:
+
+```
+video,control_video,reference_image,prompt
+objaverse_60k_120h/videos_curve/{bucket}/{uuid}/albedo.mp4,  .../position.mp4,  ...
+```
+
+- `video`: path to albedo video (H or V, randomly assigned per row)
+- `control_video`: path to position video (same UUID, same orbit)
+- `reference_image`: render image path
+- `prompt`: text description
+
+### Upload to HuggingFace
+
+```bash
+# Upload rendered dataset (azcopy download → HF upload, bucket-by-bucket)
+python3 upload_dataset.py --workers 2 --track h
+python3 upload_dataset.py --workers 2 --track v
+```
+
+### Training
+
+| Script | Mode | Resolution |
+|--------|------|------------|
+| `OrbitVideoGen/scripts/train_hv_random_high.sh` | HV random, high noise | 512×512, 121 frames |
+| `OrbitVideoGen/scripts/train_hv_random_low.sh` | HV random, low noise | 512×512, 121 frames |
+| `OrbitVideoGen/scripts/train_h_only_high.sh` | H-only, high noise | 768×768 |
+
+See `OrbitVideoGen/README.md` for all 4 training modes (H-only, HV random, HV spatial, HV interleave).
+
+### Reference Dataset
+
+The training data for released checkpoints:
+[`Yuehavingfun/Objaverse-PBR-render`](https://huggingface.co/datasets/Yuehavingfun/Objaverse-PBR-render) — ~23K Objaverse models, H+V 120-camera renders (142 GB).
+
 ## Citation
 
 ```bibtex
