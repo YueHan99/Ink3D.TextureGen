@@ -22,11 +22,11 @@
 
 ## Overview
 
-**Ink3D** aims to generate complex textures on arbitrary 3D meshes using video generative models. Given a 3D mesh and a reference image, the system:
+**Ink3D** combines video priors and native 3D priors to generate complex textures with clean boundaries. Given a white mesh and a reference image, it:
 
-1. **Renders** geometry condition videos (position, normal) from horizontal and vertical camera orbits
-2. **Generates** textured appearance videos using a fine-tuned 14B video diffusion model with geometry control
-3. **Bakes** the generated multi-view videos into a voxelized texture grid via optimization
+1. **Renders** position and normal videos along fixed horizontal and vertical camera orbits
+2. **Generates** textured orbital videos with geometry-controlled video generation
+3. **Back-projects and repairs** dense video observations in o-voxels, enabling native 3D texture baking with clean boundaries
 
 ```
   GLB Mesh  ──→  Render  ──→  Video Gen  ──→  Texture Baking  ──→  .vxz + .glb
