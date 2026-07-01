@@ -30,7 +30,7 @@
 
 ```
   GLB Mesh  ──→  Render  ──→  Video Gen  ──→  Texture Baking  ──→  .vxz + .glb
-  (geometry)     (H/V)        (WAN 14B)        (priority mode)     (PBR asset)
+    (geometry)     (H/V)        (WAN 14B)        (o-voxel opt.)      (PBR asset)
 ```
 
 ## Quick Start: End-to-End Demo
