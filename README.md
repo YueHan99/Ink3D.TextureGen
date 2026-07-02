@@ -5,7 +5,7 @@
 <h3 align="center">Ink3D: Sculpting 3D Assets with Extremely Complex Textures via Video Generative Models</h3>
 
 <p align="center">
-  <a href="#"><img src="https://img.shields.io/badge/arXiv-coming_soon-b31b1b"></a>
+  <a href="https://arxiv.org/abs/2607.01222"><img src="https://img.shields.io/badge/arXiv-2607.01222-b31b1b"></a>
   <a href="https://yuehan99.github.io/Ink3D-TextureGen/"><img src="https://img.shields.io/badge/Project-Page-blue"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green"></a>
 </p>
@@ -219,8 +219,8 @@ To render condition videos from your own GLB models, see [`Render/README.md`](Re
 ```bibtex
 @article{ink3d2026,
   title   = {Ink3D: Sculpting 3D Assets with Extremely Complex Textures via Video Generative Models},
-  author  = {},
-  journal = {},
+  author  = {Yue Han and Chong Li and Zhening Liu and Cong Huang and Fang Deng and Yong Liu and Fangyun Wei and Yan Lu},
+  journal = {arXiv preprint arXiv:2607.01222},
   year    = {2026},
 }
 ```
